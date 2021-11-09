@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { AuthProvider } from './auth';
+import { AuthProvider } from './authProvider';
 
 const AppProvider = ({ children }) => {
   return (
     <AuthProvider>
-      {children}     
+      {children}
     </AuthProvider>
   );
 

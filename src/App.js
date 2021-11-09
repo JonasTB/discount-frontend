@@ -1,13 +1,19 @@
 import React from 'react';
-import Routes from './routes/index';
+import Routes from './routes';
+import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import AppProvider from './hooks/index'
+import AppProvider from './hooks'
 
 function App() {
   return (
-    <AppProvider >
-      <Routes />
-    </AppProvider>
+    <BrowserRouter>
+      <ToastContainer />
+      <AppProvider >
+        <Routes />
+      </AppProvider>
+    </BrowserRouter>
   );
 }
 

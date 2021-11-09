@@ -1,4 +1,6 @@
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch } from 'react-router-dom';
+
+import PrivateRoute from './route';
 
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
@@ -7,8 +9,8 @@ const Routes = () => {
     return (
         <BrowserRouter>
             <Switch>
-                <Route exact path="/" component={Login} />
-                <Route exact path="/dashbboard" component={Dashboard} />
+                <PrivateRoute exact path="/" component={Login} />
+                <PrivateRoute isPrivate exact path="/dashboard" component={Dashboard} />
             </Switch>
         </BrowserRouter>
     )

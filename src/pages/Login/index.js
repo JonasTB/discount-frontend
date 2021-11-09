@@ -1,75 +1,47 @@
-import React, { useCallback, useRef, useState } from "react";
-import { FiMail, FiLock } from 'react-icons/fi';
+import React, { useContext, useState } from "react";
+// import { FiMail, FiLock } from 'react-icons/fi';
 import { Container, Banner, Content } from './styles';
-import { Form } from '@unform/web';
 
-import { toast } from 'react-toastify'
-import { useAuth } from '../../hooks/auth';
-import * as Yup from 'yup';
-import getValidatorErrors from '../../util/getValidatorErros';
+import { Context } from '../../hooks/authProvider';
+import { useHistory } from 'react-router-dom'
+
+function initialState() {
+    return {
+        email: "",
+        password: "",
+    }
+}
 
 const Login = () => {
+    const history = useHistory();
+    const { login } = useContext(Context);
+    const [values, setValues] = useState(initialState);
 
-    const formRef = useRef(null);
-    const { login } = useAuth();
-    let [ loading, setLoading ] = useState(false);
+    const validate = async (e) => {
+        e.preventDefault();
+        const data = values;
 
-    const handleSubmit = useCallback(
-        
-        async (data) => {
-            console.log(data);
-            setTimeout(()=>null, 10000)
-            setLoading(true);
-            try {
-                formRef.current?.setErros({});
-                const schema = Yup.object().shape({
-                    email: Yup.string().required("Email é obrigatório!"),
-                    password: Yup.string().min(6, "Senha muito curta, verifique sua senha."),
-                });
+        await login({
+            email: data.email,
+            password: data.password,
+        });
 
-                await schema.validate(data, { abortEarly: false });
-
-                await login({
-                    email: data.email,
-                    password: data.password,
-                });
-
-                toast.success('Seja bem-vindo ao web administrativo de descontos');
-            } catch (err) {
-                setLoading(false);
-
-                if (err instanceof Yup.ValidationError) {
-                    const errors = getValidatorErrors(err);
-                    formRef.current?.setErros(errors);
-                    
-                    return;
-                }
-
-                toast.error("Email ou senha inválidos");
-                formRef.current.clearField("password");
-            }
-        },
-
-        [login]
-    );
+        history.push('/dashboard');
+    }
 
     return (
         <Container>
             <Banner />
             <Content>
-                <Form ref={formRef} onSubmit={handleSubmit}>
-                    <h1>Bem vindo!</h1>
-                    <p>Entre com o seu login administrativo</p>
-                    <span>Email</span>
-                    <input name="email" icon={FiMail} />
-                    <span>Senha</span>
-                    <input type="password" name="senha" />
+                <form>
+                    <input type="email" onChange={(e) => { setValues({ ...values, email: e.target.value }) }} />
+                    <input type="password" onChange={(e) => { setValues({ ...values, password: e.target.value }) }} />
+                </form>
 
-                    <button type="submit">Entrar</button>
-                </Form>
+                <button type="submit" onClick={validate}>ENTRAR</button>
             </Content>
         </Container>
-    )
+    );
 }
 
 export default Login;
